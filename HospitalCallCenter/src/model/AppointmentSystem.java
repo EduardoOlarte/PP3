@@ -27,7 +27,8 @@ public class AppointmentSystem {
 		this.patientTree = new BinaryTree<>(Comparator.comparing(Patient::getId));
 		this.userTree = new BinaryTree<>(Comparator.comparing(User::getNameid));
 		this.doctorTree = new AVLTree<>(Comparator.comparing(Doctor::getProfessionalId));
-		this.appointmentTree = new AVLTree<>(Comparator.comparing(Appointment::getId));
+		this.appointmentTree = new AVLTree<>(new AppointmentComparator());
+
 		this.dataManager = new DataManager();
 		filePatients = "Data/Pacientes.txt";
 		fileUsers = "Data/Usuarios.txt";
@@ -51,15 +52,24 @@ public class AppointmentSystem {
 	}
 
 	// Registrar una nueva cita
-	public boolean registerAppointment(String id, String patientName, String doctorName, Date date, String time,
-			String reason, Specialty specialty) {
-		if (appointmentTree.contains(new Appointment(id, null, null, null, null, null, null))) {
-			return false; // Ya existe una cita con este ID
-		}
+	public boolean registerAppointment(String id, String patient, String doctor, Date date, String time, String reason, Specialty specialty) {
+	    if (date == null || time == null || time.isEmpty()) {
+	        throw new IllegalArgumentException("La cita debe tener fecha y hora válidas.");
+	    }
 
-		Appointment newAppointment = new Appointment(id, patientName, doctorName, date, time, reason, specialty);
-		return appointmentTree.add(newAppointment);
+	    // Proceder con la lógica para registrar la cita
+	    Appointment newAppointment = new Appointment(id, patient, doctor, date, time, reason, specialty);
+	    
+	    // Verifica si la cita ya existe
+	    if (appointmentTree.contains(newAppointment)) {
+	        return false; // La cita ya existe
+	    }
+
+	    // Si no existe, agregar la cita al árbol
+	    appointmentTree.add(newAppointment);
+	    return true; // Registro exitoso
 	}
+
 
 	// Modificar una cita existente
 	public boolean modifyAppointment(String id, String newPatientName, String newDoctorName, Date newDate,
@@ -86,13 +96,31 @@ public class AppointmentSystem {
 
 	public List<Appointment> viewAllAppointments() {
 		List<Appointment> appointmentList = new ArrayList<>();
-		Iterator<Appointment> iterator = appointmentTree.iterator();
 
+		// Recorrer el árbol en orden
+		Iterator<Appointment> iterator = appointmentTree.iterator();
 		while (iterator.hasNext()) {
 			appointmentList.add(iterator.next());
 		}
 
-		return appointmentList;
+		return appointmentList; // Lista siempre ordenada por el recorrido en orden del árbol
+	}
+
+	public List<Appointment> viewAppointmentsBySpecialty(Specialty specialty) {
+		List<Appointment> appointmentList = new ArrayList<>();
+
+		// Recorrer el árbol en orden
+		Iterator<Appointment> iterator = appointmentTree.iterator();
+		while (iterator.hasNext()) {
+			Appointment appointment = iterator.next();
+
+			// Filtrar por especialidad
+			if (appointment.getSpecialty() == specialty) {
+				appointmentList.add(appointment);
+			}
+		}
+
+		return appointmentList; // Lista ordenada y filtrada
 	}
 
 	// Mostrar una cita por su id

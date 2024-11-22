@@ -1,0 +1,1682 @@
+package view;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class View extends JFrame {
+	public View() {
+		// Configuración de la ventana
+		setTitle("Gestión de Usuarios");
+		setBounds(100, 100, 233, 438); // Establecer dimensiones
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null); // Centrar la ventana en la pantalla
+
+		// Crear y agregar el LoginPanel
+		LoginPanel loginPanel = new LoginPanel(this);
+		add(loginPanel);
+
+		// Hacer la ventana visible
+		setVisible(true);
+	}
+
+	// Método para cambiar el panel
+	public void changePanel(JPanel panel, int size) {
+		getContentPane().removeAll(); // Limpiar el contenido actual
+		add(panel); // Agregar el nuevo panel
+		if(size==0) {
+			setBounds(100, 100, 1200, 700);
+		}else {
+			setBounds(100, 100, 233, 438);
+		}
+		setLocationRelativeTo(null);
+		revalidate(); // Revalidar el contenedor
+		repaint(); // Volver a dibujar
+	}
+
+	public static void main(String[] args) {
+        // Ejecutar la aplicación en el hilo de despacho de eventos
+        SwingUtilities.invokeLater(() -> {
+            new View(); // Crear instancia de la vista
+        });
+    }
+}
+
+package view;
+
+import javax.swing.*;
+import java.awt.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+public class UserPanel extends JPanel {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JTextField textField, textField_2;
+    private JPasswordField passwordField_1;
+    private JTable UserTable;
+
+    public UserPanel(View view) {
+        setLayout(null);
+        setBorder(new EmptyBorder(5, 5, 5, 5));
+        setBackground(new Color(102, 204, 255));
+        setBounds(0, 0, 1184, 661);
+
+        // Botones
+        JButton addUserButton = new JButton("Agregar Usuario");
+        addUserButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        addUserButton.setBounds(17, 69, 185, 50);
+        add(addUserButton);
+
+        JButton modifyUserButton = new JButton("Modificar Usuario");
+        modifyUserButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        modifyUserButton.setBounds(17, 151, 185, 50);
+        add(modifyUserButton);
+
+        JButton removeUserButton = new JButton("Eliminar Usuario");
+        removeUserButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        removeUserButton.setBounds(17, 232, 185, 57);
+        add(removeUserButton);
+
+        JButton showUsersButton = new JButton("Ver Usuarios");
+        showUsersButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        showUsersButton.setBounds(17, 314, 185, 50);
+        add(showUsersButton);
+
+        JButton UserExitButton = new JButton("Salir");
+        UserExitButton.setBounds(116, 548, 87, 29);
+        add(UserExitButton);
+        UserExitButton.addActionListener(e -> System.exit(0));
+
+        JButton UserMenuButton = new JButton("Menu");
+        UserMenuButton.setBounds(17, 548, 87, 29);
+        add(UserMenuButton);
+        UserMenuButton.addActionListener(e -> {
+            // Cambiar al LoginPanel
+            view.changePanel(new MenuPanel(view),1);
+        });
+
+        JButton UserBackLoginButton = new JButton("Cerrar Sesion");
+        UserBackLoginButton.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        UserBackLoginButton.setBounds(41, 480, 138, 44);
+        add(UserBackLoginButton);
+        UserBackLoginButton.addActionListener(e -> {
+            // Cambiar al LoginPanel
+            view.changePanel(new LoginPanel(view),1);
+        });
+
+        // Labels y TextFields
+        JLabel nameUserLabel = new JLabel("Usuario");
+        nameUserLabel.setBounds(219, 168, 152, 22);
+        add(nameUserLabel);
+
+        textField = new JTextField();
+        textField.setBounds(219, 190, 152, 28);
+        add(textField);
+        textField.setColumns(10);
+
+        JLabel passwordUserLabel = new JLabel("Contraseña");
+        passwordUserLabel.setBounds(219, 230, 152, 22);
+        add(passwordUserLabel);
+
+        textField_2 = new JTextField();
+        textField_2.setColumns(10);
+        textField_2.setBounds(219, 312, 152, 28);
+        add(textField_2);
+
+        JLabel rolUserLabel = new JLabel("Rol");
+        rolUserLabel.setBounds(219, 290, 152, 22);
+        add(rolUserLabel);
+
+        passwordField_1 = new JPasswordField();
+        passwordField_1.setBounds(219, 250, 152, 28);
+        add(passwordField_1);
+
+        // Tabla de Usuarios
+        JScrollPane scrollPaneUser = new JScrollPane();
+        scrollPaneUser.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPaneUser.setBounds(396, 48, 782, 586);
+        add(scrollPaneUser);
+
+        UserTable = new JTable();
+        UserTable.setShowVerticalLines(true);
+        UserTable.setShowHorizontalLines(true);
+        UserTable.setModel(new DefaultTableModel(
+            new Object[][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String[] {
+                "Usuario", "Contraseña", "Rol"
+            }
+        ));
+        scrollPaneUser.setViewportView(UserTable);
+    }
+
+    // Getters para los botones y otros componentes
+    public JButton getAddUserButton() {
+        return (JButton) getComponentAt(17, 69);
+    }
+
+    public JButton getModifyUserButton() {
+        return (JButton) getComponentAt(17, 151);
+    }
+
+    public JButton getRemoveUserButton() {
+        return (JButton) getComponentAt(17, 232);
+    }
+
+    public JButton getShowUsersButton() {
+        return (JButton) getComponentAt(17, 314);
+    }
+
+    public JButton getUserExitButton() {
+        return (JButton) getComponentAt(116, 548);
+    }
+
+    public JButton getUserMenuButton() {
+        return (JButton) getComponentAt(17, 548);
+    }
+
+    public JButton getUserBackLoginButton() {
+        return (JButton) getComponentAt(41, 480);
+    }
+
+    public JTextField getUserField() {
+        return textField;
+    }
+
+    public JPasswordField getPasswordField() {
+        return passwordField_1;
+    }
+
+    public JTextField getRoleField() {
+        return textField_2;
+    }
+
+    public JTable getUserTable() {
+        return UserTable;
+    }
+}
+
+package view;
+
+import javax.swing.*;
+import java.awt.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+public class PatientPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JTextField idPatientField, namePatientField, birthDateField, contactField, addressField;
+	private JTable patientTable;
+	private JButton addPatientsButton, modifyPatientButton, deletePatientButton, showPatientsButton, exitButton,
+			menuButton, backLoginButton;
+
+	public PatientPanel(View view) {
+		setLayout(null);
+		setBorder(new EmptyBorder(5, 5, 5, 5));
+		setBackground(new Color(102, 204, 255));
+		setBounds(0, 0, 1184, 661);
+
+		// Botones
+		addPatientsButton = new JButton("Agregar Paciente");
+		addPatientsButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		addPatientsButton.setBounds(17, 69, 185, 50);
+		add(addPatientsButton);
+
+		modifyPatientButton = new JButton("Modificar Paciente");
+		modifyPatientButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		modifyPatientButton.setBounds(17, 151, 185, 50);
+		add(modifyPatientButton);
+
+		deletePatientButton = new JButton("Eliminar Paciente");
+		deletePatientButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		deletePatientButton.setBounds(17, 232, 185, 57);
+		add(deletePatientButton);
+
+		showPatientsButton = new JButton("Ver Pacientes");
+		showPatientsButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		showPatientsButton.setBounds(17, 314, 185, 50);
+		add(showPatientsButton);
+
+		exitButton = new JButton("Salir");
+		exitButton.setBounds(116, 548, 87, 29);
+		add(exitButton);
+		exitButton.addActionListener(e -> System.exit(0));
+
+		menuButton = new JButton("Menu");
+		menuButton.setBounds(17, 548, 87, 29);
+		add(menuButton);
+		menuButton.addActionListener(e -> {
+			// Cambiar al LoginPanel
+			view.changePanel(new MenuPanel(view), 1);
+		});
+
+		backLoginButton = new JButton("Cerrar Sesion");
+		backLoginButton.setFont(new Font("SansSerif", Font.PLAIN, 12));
+		backLoginButton.setBounds(41, 480, 138, 44);
+		add(backLoginButton);
+		backLoginButton.addActionListener(e -> {
+			// Cambiar al LoginPanel
+			view.changePanel(new LoginPanel(view), 1);
+		});
+
+		// Etiquetas y campos de texto
+		JLabel idPatientLabel = new JLabel("Cedula");
+		idPatientLabel.setBounds(219, 168, 152, 22);
+		add(idPatientLabel);
+
+		idPatientField = new JTextField();
+		idPatientField.setColumns(10);
+		idPatientField.setBounds(219, 190, 152, 28);
+		add(idPatientField);
+
+		JLabel patientNameLabel = new JLabel("Nombre");
+		patientNameLabel.setBounds(219, 230, 152, 22);
+		add(patientNameLabel);
+
+		namePatientField = new JTextField();
+		namePatientField.setColumns(10);
+		namePatientField.setBounds(219, 253, 152, 28);
+		add(namePatientField);
+
+		JLabel birthDateLabel = new JLabel("Fecha de Nacimiento");
+		birthDateLabel.setBounds(219, 290, 152, 22);
+		add(birthDateLabel);
+
+		birthDateField = new JTextField();
+		birthDateField.setColumns(10);
+		birthDateField.setBounds(219, 312, 152, 28);
+		add(birthDateField);
+
+		JLabel addressLabel = new JLabel("Direccion");
+		addressLabel.setBounds(219, 361, 152, 22);
+		add(addressLabel);
+
+		addressField = new JTextField();
+		addressField.setColumns(10);
+		addressField.setBounds(219, 382, 152, 28);
+		add(addressField);
+
+		JLabel contactLabel = new JLabel("Contacto");
+		contactLabel.setBounds(219, 421, 152, 22);
+		add(contactLabel);
+
+		contactField = new JTextField();
+		contactField.setColumns(10);
+		contactField.setBounds(219, 443, 152, 28);
+		add(contactField);
+
+		// Tabla
+		JScrollPane scrollPanePatient = new JScrollPane();
+		scrollPanePatient.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPanePatient.setBounds(396, 48, 782, 586);
+		add(scrollPanePatient);
+
+		patientTable = new JTable();
+		patientTable.setShowVerticalLines(true);
+		patientTable.setModel(new DefaultTableModel(
+				new Object[][] { { null, null, null, null, null }, { null, null, null, null, null },
+						{ null, null, null, null, null }, { null, null, null, null, null }, },
+				new String[] { "Cedula", "Nombre", "Fecha de Nacimiento", "Direccion", "Contacto" }));
+		scrollPanePatient.setViewportView(patientTable);
+	}
+
+	// Getters para los componentes
+	public JButton getAddPatientsButton() {
+		return addPatientsButton;
+	}
+
+	public JButton getModifyPatientButton() {
+		return modifyPatientButton;
+	}
+
+	public JButton getDeletePatientButton() {
+		return deletePatientButton;
+	}
+
+	public JButton getShowPatientsButton() {
+		return showPatientsButton;
+	}
+
+	public JButton getExitButton() {
+		return exitButton;
+	}
+
+	public JButton getMenuButton() {
+		return menuButton;
+	}
+
+	public JButton getBackLoginButton() {
+		return backLoginButton;
+	}
+
+	public JTextField getIdPatientField() {
+		return idPatientField;
+	}
+
+	public JTextField getNamePatientField() {
+		return namePatientField;
+	}
+
+	public JTextField getBirthDateField() {
+		return birthDateField;
+	}
+
+	public JTextField getContactField() {
+		return contactField;
+	}
+
+	public JTextField getAddressField() {
+		return addressField;
+	}
+
+	public JTable getPatientTable() {
+		return patientTable;
+	}
+}
+
+package view;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class MenuPanel extends JPanel {
+	public MenuPanel(View view) {
+		setLayout(null);
+		setBackground(new Color(102, 204, 255));
+		setBounds(0, 0, 217, 700); // Ajusta el tamaño según sea necesario
+
+		JButton appointmentButton = new JButton("Citas");
+		appointmentButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		appointmentButton.setBounds(17, 48, 185, 29);
+		add(appointmentButton);
+		appointmentButton.addActionListener(e -> {
+            // Cambiar al LoginPanel
+            view.changePanel(new AppointmentPanel(view), 0);
+        });
+
+		JButton patientButton = new JButton("Pacientes");
+		patientButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		patientButton.setBounds(17, 115, 185, 29);
+		add(patientButton);
+		patientButton.addActionListener(e -> {
+            // Cambiar al LoginPanel
+            view.changePanel(new PatientPanel(view),0);
+        });
+
+		JButton doctorButton = new JButton("Doctores");
+		doctorButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		doctorButton.setBounds(17, 176, 185, 29);
+		add(doctorButton);
+		doctorButton.addActionListener(e -> {
+            // Cambiar al LoginPanel
+            view.changePanel(new DoctorPanel(view),0);
+        });
+
+		JButton usersButton = new JButton("Usuarios");
+		usersButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		usersButton.setBounds(17, 237, 185, 29);
+		add(usersButton);
+		usersButton.addActionListener(e -> {
+            // Cambiar al LoginPanel
+            view.changePanel(new UserPanel(view),0);
+        });
+
+		JButton logoutButton = new JButton("Cerrar Sesion");
+		logoutButton.setFont(new Font("SansSerif", Font.PLAIN, 12));
+		logoutButton.setBounds(39, 321, 138, 29);
+		add(logoutButton);
+		logoutButton.addActionListener(e -> {
+            // Cambiar al LoginPanel
+            view.changePanel(new LoginPanel(view),1);
+        });
+
+		JButton exitButton = new JButton("Salir");
+		exitButton.setBounds(124, 364, 87, 29);
+		exitButton.addActionListener(e -> System.exit(0));
+		add(exitButton);
+	}
+}
+
+package view;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class LoginPanel extends JPanel {
+    private JTextField userField;
+    private JPasswordField passwordField;
+
+    public LoginPanel(View view) {
+        setBackground(new Color(102, 204, 255));
+        setLayout(null);
+        setBounds(0, 0, 1200, 700);
+
+        JLabel loginLabel = new JLabel("Inicio de Sesion");
+        loginLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        loginLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        loginLabel.setBounds(17, 26, 185, 29);
+        add(loginLabel);
+
+        JLabel userLabel = new JLabel("Usuario");
+        userLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        userLabel.setBounds(17, 79, 185, 29);
+        add(userLabel);
+
+        userField = new JTextField();
+        userField.setBounds(17, 110, 185, 37);
+        add(userField);
+        userField.setColumns(10);
+
+        JLabel passwordLabel = new JLabel("Contraseña");
+        passwordLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        passwordLabel.setBounds(17, 158, 185, 29);
+        add(passwordLabel);
+
+        passwordField = new JPasswordField();
+        passwordField.setBounds(17, 183, 185, 37);
+        add(passwordField);
+
+        JButton loginButton = new JButton("Iniciar");
+        loginButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        loginButton.setBounds(17, 250, 185, 29);
+        add(loginButton);
+
+        JButton exitButton = new JButton("Salir");
+        exitButton.setBounds(115, 347, 87, 29);
+        exitButton.addActionListener(e -> System.exit(0)); // Cierra la aplicación
+        add(exitButton);
+
+        // Acción para el botón "Iniciar"
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Cambiar al MenuPanel
+                view.changePanel(new MenuPanel(view),1);
+            }
+        });
+    }
+}
+
+package view;
+
+import javax.swing.*;
+import java.awt.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+public class DoctorPanel extends JPanel {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JTextField idDoctorField, nameDoctorField, specialtyDoctorField;
+    private JTable doctorTable;
+    private JButton addDoctorButton, modifyDoctorButton, removeDoctorButton, showDoctorsButton, exitButton, menuButton, backLoginButton;
+
+    public DoctorPanel(View view) {
+        setLayout(null);
+        setBorder(new EmptyBorder(5, 5, 5, 5));
+        setBackground(new Color(102, 204, 255));
+        setBounds(0, 0, 1184, 661);
+
+        // Botones
+        addDoctorButton = new JButton("Agregar Doctor");
+        addDoctorButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        addDoctorButton.setBounds(17, 69, 185, 50);
+        add(addDoctorButton);
+
+        modifyDoctorButton = new JButton("Modificar Doctor");
+        modifyDoctorButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        modifyDoctorButton.setBounds(17, 151, 185, 50);
+        add(modifyDoctorButton);
+
+        removeDoctorButton = new JButton("Eliminar Doctor");
+        removeDoctorButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        removeDoctorButton.setBounds(17, 232, 185, 57);
+        add(removeDoctorButton);
+
+        showDoctorsButton = new JButton("Ver Doctores");
+        showDoctorsButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        showDoctorsButton.setBounds(17, 314, 185, 50);
+        add(showDoctorsButton);
+
+        exitButton = new JButton("Salir");
+        exitButton.setBounds(116, 548, 87, 29);
+        add(exitButton);
+        exitButton.addActionListener(e -> System.exit(0));
+
+        menuButton = new JButton("Menu");
+        menuButton.setBounds(17, 548, 87, 29);
+        add(menuButton);
+        menuButton.addActionListener(e -> {
+            // Cambiar al LoginPanel
+            view.changePanel(new MenuPanel(view),1);
+        });
+
+        backLoginButton = new JButton("Cerrar Sesion");
+        backLoginButton.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        backLoginButton.setBounds(41, 480, 138, 44);
+        add(backLoginButton);
+        backLoginButton.addActionListener(e -> {
+            // Cambiar al LoginPanel
+            view.changePanel(new LoginPanel(view),1);
+        });
+
+        // Etiquetas y campos de texto
+        JLabel idDoctorLabel = new JLabel("Id");
+        idDoctorLabel.setBounds(219, 168, 152, 22);
+        add(idDoctorLabel);
+
+        idDoctorField = new JTextField();
+        idDoctorField.setColumns(10);
+        idDoctorField.setBounds(219, 190, 152, 28);
+        add(idDoctorField);
+
+        JLabel doctorNameLabel = new JLabel("Nombre");
+        doctorNameLabel.setBounds(219, 230, 152, 22);
+        add(doctorNameLabel);
+
+        nameDoctorField = new JTextField();
+        nameDoctorField.setColumns(10);
+        nameDoctorField.setBounds(219, 252, 152, 28);
+        add(nameDoctorField);
+
+        JLabel specialtyDoctorLabel = new JLabel("Especialidad");
+        specialtyDoctorLabel.setBounds(219, 290, 152, 22);
+        add(specialtyDoctorLabel);
+
+        specialtyDoctorField = new JTextField();
+        specialtyDoctorField.setColumns(10);
+        specialtyDoctorField.setBounds(219, 312, 152, 28);
+        add(specialtyDoctorField);
+
+        // Tabla
+        JScrollPane scrollPaneDoctors = new JScrollPane();
+        scrollPaneDoctors.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPaneDoctors.setBounds(396, 48, 782, 586);
+        add(scrollPaneDoctors);
+
+        doctorTable = new JTable();
+        doctorTable.setShowVerticalLines(true);
+        doctorTable.setShowHorizontalLines(true);
+        doctorTable.setModel(new DefaultTableModel(
+            new Object[][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+            },
+            new String[] {
+                "Id", "Nombre", "Especialidad"
+            }
+        ));
+        scrollPaneDoctors.setViewportView(doctorTable);
+    }
+
+    // Getters para componentes
+    public JButton getAddDoctorButton() {
+        return addDoctorButton;
+    }
+
+    public JButton getModifyDoctorButton() {
+        return modifyDoctorButton;
+    }
+
+    public JButton getRemoveDoctorButton() {
+        return removeDoctorButton;
+    }
+
+    public JButton getShowDoctorsButton() {
+        return showDoctorsButton;
+    }
+
+    public JButton getExitButton() {
+        return exitButton;
+    }
+
+    public JButton getMenuButton() {
+        return menuButton;
+    }
+
+    public JButton getBackLoginButton() {
+        return backLoginButton;
+    }
+
+    public JTextField getIdDoctorField() {
+        return idDoctorField;
+    }
+
+    public JTextField getNameDoctorField() {
+        return nameDoctorField;
+    }
+
+    public JTextField getSpecialtyDoctorField() {
+        return specialtyDoctorField;
+    }
+
+    public JTable getDoctorTable() {
+        return doctorTable;
+    }
+}
+
+package view;
+
+import javax.swing.*;
+import java.awt.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+public class AppointmentPanel extends JPanel {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JTextField idAppointmentField, doctorAppointmentField, patientAppointmentField, timeField, dateAppointmentField, specialtyField, reasonField, specialtyFilterField;
+    private JTable appointmentTable;
+    private JButton addAppointmentButton, modifyAppointmentButton, cancelAppointmentButton, showAppointmentsButton, exitButton, menuButton, backLoginButton;
+
+    public AppointmentPanel(View view) {
+        setLayout(null);
+        setBorder(new EmptyBorder(5, 5, 5, 5));
+        setBackground(new Color(102, 204, 255));
+        setBounds(0, 0, 1184, 661);
+
+        // Botones
+        addAppointmentButton = new JButton("Agregar Cita");
+        addAppointmentButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        addAppointmentButton.setBounds(17, 69, 185, 50);
+        add(addAppointmentButton);
+
+        modifyAppointmentButton = new JButton("Modificar Cita");
+        modifyAppointmentButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        modifyAppointmentButton.setBounds(17, 151, 185, 50);
+        add(modifyAppointmentButton);
+
+        cancelAppointmentButton = new JButton("Eliminar Cita");
+        cancelAppointmentButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        cancelAppointmentButton.setBounds(17, 232, 185, 57);
+        add(cancelAppointmentButton);
+
+        showAppointmentsButton = new JButton("Ver Citas");
+        showAppointmentsButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        showAppointmentsButton.setBounds(17, 314, 185, 50);
+        add(showAppointmentsButton);
+
+        exitButton = new JButton("Salir");
+        exitButton.setBounds(116, 548, 87, 29);
+        add(exitButton);
+        exitButton.addActionListener(e -> System.exit(0));
+
+        menuButton = new JButton("Menu");
+        menuButton.setBounds(17, 548, 87, 29);
+        add(menuButton);
+        menuButton.addActionListener(e -> {
+            // Cambiar al MenuPanel
+            view.changePanel(new MenuPanel(view),1);
+        });
+        
+
+        backLoginButton = new JButton("Cerrar Sesion");
+        backLoginButton.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        backLoginButton.setBounds(41, 480, 138, 44);
+        add(backLoginButton);
+        backLoginButton.addActionListener(e -> {
+            // Cambiar al LoginPanel
+            view.changePanel(new LoginPanel(view),1);
+        });
+
+        // Etiquetas y campos de texto
+        JLabel idAppointmentLabel = new JLabel("Id Cita");
+        idAppointmentLabel.setBounds(219, 75, 152, 22);
+        add(idAppointmentLabel);
+
+        idAppointmentField = new JTextField();
+        idAppointmentField.setColumns(10);
+        idAppointmentField.setBounds(219, 97, 152, 28);
+        add(idAppointmentField);
+
+        JLabel patientAppointmentLabel = new JLabel("Nombre Paciente");
+        patientAppointmentLabel.setBounds(219, 137, 152, 22);
+        add(patientAppointmentLabel);
+
+        patientAppointmentField = new JTextField();
+        patientAppointmentField.setColumns(10);
+        patientAppointmentField.setBounds(219, 160, 152, 28);
+        add(patientAppointmentField);
+
+        JLabel doctorAppointmentLabel = new JLabel("Doctor");
+        doctorAppointmentLabel.setBounds(219, 199, 152, 22);
+        add(doctorAppointmentLabel);
+
+        doctorAppointmentField = new JTextField();
+        doctorAppointmentField.setColumns(10);
+        doctorAppointmentField.setBounds(219, 221, 152, 28);
+        add(doctorAppointmentField);
+
+        JLabel dateAppointmentLabel = new JLabel("Fecha Cita");
+        dateAppointmentLabel.setBounds(219, 270, 152, 22);
+        add(dateAppointmentLabel);
+
+        dateAppointmentField = new JTextField();
+        dateAppointmentField.setColumns(10);
+        dateAppointmentField.setBounds(219, 287, 152, 28);
+        add(dateAppointmentField);
+
+        JLabel timeLabel = new JLabel("Hora Cita");
+        timeLabel.setBounds(219, 330, 152, 22);
+        add(timeLabel);
+
+        timeField = new JTextField();
+        timeField.setColumns(10);
+        timeField.setBounds(219, 352, 152, 28);
+        add(timeField);
+
+        JLabel reasonLabel = new JLabel("Motivo");
+        reasonLabel.setBounds(219, 402, 152, 22);
+        add(reasonLabel);
+
+        reasonField = new JTextField();
+        reasonField.setColumns(10);
+        reasonField.setBounds(219, 425, 152, 28);
+        add(reasonField);
+
+        JLabel specialtyLabel = new JLabel("Especialidad");
+        specialtyLabel.setBounds(219, 462, 152, 22);
+        add(specialtyLabel);
+
+        specialtyField = new JTextField();
+        specialtyField.setColumns(10);
+        specialtyField.setBounds(219, 484, 152, 28);
+        add(specialtyField);
+
+        JLabel specialtyFilterLabel = new JLabel("Filtro de Especialidad");
+        specialtyFilterLabel.setBounds(27, 376, 152, 22);
+        add(specialtyFilterLabel);
+
+        specialtyFilterField = new JTextField();
+        specialtyFilterField.setColumns(10);
+        specialtyFilterField.setBounds(27, 398, 152, 28);
+        add(specialtyFilterField);
+
+        // Tabla
+        JScrollPane scrollPaneAppointment = new JScrollPane();
+        scrollPaneAppointment.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPaneAppointment.setBounds(396, 48, 782, 586);
+        add(scrollPaneAppointment);
+
+        appointmentTable = new JTable();
+        appointmentTable.setModel(new DefaultTableModel(
+            new Object[][] {
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+            },
+            new String[] {
+                "Id Cita", "Paciente", "Doctor", "Fecha de Cita", "Hora de Cita", "Motivo", "Especialidad"
+            }
+        ));
+        scrollPaneAppointment.setViewportView(appointmentTable);
+    }
+
+    // Getters para componentes
+    public JButton getAddAppointmentButton() {
+        return addAppointmentButton;
+    }
+
+    public JButton getModifyAppointmentButton() {
+        return modifyAppointmentButton;
+    }
+
+    public JButton getCancelAppointmentButton() {
+        return cancelAppointmentButton;
+    }
+
+    public JButton getShowAppointmentsButton() {
+        return showAppointmentsButton;
+    }
+
+    public JButton getExitButton() {
+        return exitButton;
+    }
+
+    public JButton getMenuButton() {
+        return menuButton;
+    }
+
+    public JButton getBackLoginButton() {
+        return backLoginButton;
+    }
+
+    public JTextField getIdAppointmentField() {
+        return idAppointmentField;
+    }
+
+    public JTextField getDoctorAppointmentField() {
+        return doctorAppointmentField;
+    }
+
+    public JTextField getPatientAppointmentField() {
+        return patientAppointmentField;
+    }
+
+    public JTextField getTimeField() {
+        return timeField;
+    }
+
+    public JTextField getDateAppointmentField() {
+        return dateAppointmentField;
+    }
+
+    public JTextField getSpecialtyField() {
+        return specialtyField;
+    }
+
+    public JTextField getReasonField() {
+        return reasonField;
+    }
+
+    public JTextField getSpecialtyFilterField() {
+        return specialtyFilterField;
+    }
+
+    public JTable getAppointmentTable() {
+        return appointmentTable;
+    }
+}
+
+package model;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+import structure.AVLTree;
+import structure.BinaryTree;
+import structure.NodeTree;
+import structure.NodeTreeAvl;
+
+public class AppointmentSystem {
+	private BinaryTree<Patient> patientTree;
+	private BinaryTree<User> userTree;
+	private AVLTree<Doctor> doctorTree;
+	private AVLTree<Appointment> appointmentTree;
+	private DataManager dataManager;
+
+	private String filePatients;
+	private String fileUsers;
+	private String fileDoctors;
+	private String fileAppointments;
+
+	public AppointmentSystem() {
+		this.patientTree = new BinaryTree<>(Comparator.comparing(Patient::getId));
+		this.userTree = new BinaryTree<>(Comparator.comparing(User::getNameid));
+		this.doctorTree = new AVLTree<>(Comparator.comparing(Doctor::getProfessionalId));
+		this.appointmentTree = new AVLTree<>(Comparator.comparing(Appointment::getId));
+		this.dataManager = new DataManager();
+		filePatients = "Data/Pacientes.txt";
+		fileUsers = "Data/Usuarios.txt";
+		fileDoctors = "Data/Doctores.txt";
+		fileAppointments = "Data/Citas.txt";
+
+	}
+
+	public void loadData() {
+		dataManager.readPatients(patientTree, filePatients);
+		dataManager.readUsers(userTree, fileUsers);
+		dataManager.readDoctors(doctorTree, fileDoctors);
+		dataManager.readAppointments(appointmentTree, fileAppointments);
+	}
+
+	public void saveData() {
+		dataManager.savePatients(patientTree, filePatients);
+		dataManager.saveUsers(userTree, fileUsers);
+		dataManager.saveDoctors(doctorTree, fileDoctors);
+		dataManager.saveAppointments(appointmentTree, fileAppointments);
+	}
+
+	// Registrar una nueva cita
+	public boolean registerAppointment(String id, String patientName, String doctorName, Date date, String time,
+			String reason, Specialty specialty) {
+		if (appointmentTree.contains(new Appointment(id, null, null, null, null, null, null))) {
+			return false; // Ya existe una cita con este ID
+		}
+
+		Appointment newAppointment = new Appointment(id, patientName, doctorName, date, time, reason, specialty);
+		return appointmentTree.add(newAppointment);
+	}
+
+	// Modificar una cita existente
+	public boolean modifyAppointment(String id, String newPatientName, String newDoctorName, Date newDate,
+			String newTime, String newReason, Specialty newSpecialty) {
+		Appointment target = new Appointment(id, null, null, null, null, null, null);
+		NodeTreeAvl<Appointment> node = appointmentTree.search(target);
+
+		if (node == null) {
+			return false; // No existe la cita
+		}
+
+		Appointment existingAppointment = node.getData();
+		Appointment updatedAppointment = new Appointment(id, newPatientName, newDoctorName, newDate, newTime, newReason,
+				newSpecialty);
+		existingAppointment.modifyAppointment(updatedAppointment);
+		return true;
+	}
+
+	// Cancelar una cita existente
+	public boolean cancelAppointment(String id) {
+		Appointment target = new Appointment(id, null, null, null, null, null, null);
+		return appointmentTree.remove(target);
+	}
+
+	public List<Appointment> viewAllAppointments() {
+		List<Appointment> appointmentList = new ArrayList<>();
+		Iterator<Appointment> iterator = appointmentTree.iterator();
+
+		while (iterator.hasNext()) {
+			appointmentList.add(iterator.next());
+		}
+
+		return appointmentList;
+	}
+
+	// Mostrar una cita por su id
+	public Appointment viewAppointmentById(String id) {
+		Appointment target = new Appointment(id, null, null, null, null, null, null);
+		NodeTreeAvl<Appointment> node = appointmentTree.search(target);
+
+		return (node != null) ? node.getData() : null; // Retorna la cita si la encuentra, de lo contrario null
+	}
+
+	// Registrar un nuevo doctor
+	public boolean registerDoctor(String professionalId, String name, Specialty specialty) {
+		Doctor newDoctor = new Doctor(professionalId, name, specialty);
+		if (doctorTree.contains(newDoctor)) {
+			return false; // Ya existe un doctor con este ID
+		}
+		return doctorTree.add(newDoctor);
+	}
+
+	// Modificar un doctor existente
+	public boolean modifyDoctor(String professionalId, String newName, Specialty newSpecialty) {
+		Doctor target = new Doctor(professionalId, null, null);
+		NodeTreeAvl<Doctor> node = doctorTree.search(target);
+
+		if (node == null) {
+			return false; // No se encontró el doctor
+		}
+
+		Doctor existingDoctor = node.getData();
+		Doctor updatedDoctor = new Doctor(professionalId, newName, newSpecialty);
+		existingDoctor.updateInfo(updatedDoctor);
+		return true;
+	}
+
+	// Eliminar un doctor
+	public boolean deleteDoctor(String professionalId) {
+		Doctor target = new Doctor(professionalId, null, null);
+		return doctorTree.remove(target);
+	}
+
+	// Mostrar todos los doctores
+	public List<Doctor> viewAllDoctors() {
+		List<Doctor> doctorList = new ArrayList<>();
+		Iterator<Doctor> iterator = doctorTree.iterator();
+
+		while (iterator.hasNext()) {
+			doctorList.add(iterator.next());
+		}
+
+		return doctorList;
+	}
+
+	// Mostrar un doctor por su professionalId
+	public Doctor viewDoctorById(String professionalId) {
+		Doctor target = new Doctor(professionalId, null, null);
+		NodeTreeAvl<Doctor> node = doctorTree.search(target);
+
+		return (node != null) ? node.getData() : null; // Retorna el doctor si lo encuentra, de lo contrario null
+	}
+
+	// Registrar un nuevo paciente
+	public boolean registerPatient(String id, String name, Date birthDate, String address, String contact) {
+		Patient newPatient = new Patient(id, name, birthDate, address, contact);
+		if (patientTree.contains(newPatient)) {
+			return false; // Ya existe un paciente con este ID
+		}
+		return patientTree.add(newPatient);
+	}
+
+	// Modificar un paciente existente
+	public boolean modifyPatient(String id, String newName, Date newBirthDate, String newAddress, String newContact) {
+		Patient target = new Patient(id, null, null, null, null);
+		NodeTree<Patient> node = patientTree.search(target);
+
+		if (node == null) {
+			return false; // No se encontró el paciente
+		}
+
+		Patient existingPatient = node.getData();
+		Patient updatedPatient = new Patient(id, newName, newBirthDate, newAddress, newContact);
+		existingPatient.updateInfo(updatedPatient);
+		return true;
+	}
+
+	// Eliminar un paciente
+	public boolean deletePatient(String id) {
+		Patient target = new Patient(id, null, null, null, null);
+		return patientTree.remove(target);
+	}
+
+	// Mostrar todos los pacientes
+	public List<Patient> viewAllPatients() {
+		List<Patient> patientList = new ArrayList<>();
+		Iterator<Patient> iterator = patientTree.iterator();
+
+		while (iterator.hasNext()) {
+			patientList.add(iterator.next());
+		}
+
+		return patientList;
+	}
+
+	// Buscar un paciente por ID
+	public Patient findPatientById(String id) {
+		Patient target = new Patient(id, null, null, null, null);
+		NodeTree<Patient> node = patientTree.search(target);
+
+		return (node != null) ? node.getData() : null;
+	}
+
+	// Registrar un nuevo usuario
+	public boolean registerUser(String nameid, String password, String rol) {
+		User newUser = new User(nameid, password, rol);
+		if (userTree.contains(newUser)) {
+			return false; // Ya existe un usuario con este nameid
+		}
+		return userTree.add(newUser);
+	}
+
+	// Modificar un usuario existente
+	public boolean modifyUser(String nameid, String newPassword, String newRol) {
+		User target = new User(nameid, null, null);
+		NodeTree<User> node = userTree.search(target);
+
+		if (node == null) {
+			return false; // No se encontró el usuario
+		}
+
+		User existingUser = node.getData();
+		User updatedUser = new User(nameid, newPassword, newRol);
+		existingUser.updateInfo(updatedUser);
+		return true;
+	}
+
+	// Eliminar un usuario
+	public boolean deleteUser(String nameid) {
+		User target = new User(nameid, null, null);
+		return userTree.remove(target);
+	}
+
+	// Mostrar todos los usuarios
+	public List<User> viewAllUsers() {
+		List<User> userList = new ArrayList<>();
+		Iterator<User> iterator = userTree.iterator();
+
+		while (iterator.hasNext()) {
+			userList.add(iterator.next());
+		}
+
+		return userList;
+	}
+
+	// Buscar un usuario por nameid
+	public User findUserByNameId(String nameid) {
+		User target = new User(nameid, null, null);
+		NodeTree<User> node = userTree.search(target);
+
+		return (node != null) ? node.getData() : null;
+	}
+
+}
+
+package model;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class Appointment {
+	private String id;
+	private String patientName;
+	private String doctorName;
+	private Date date;
+	private String time;
+	private String reason;
+	private Specialty specialty;
+
+	public Appointment(String id, String patient, String doctor, Date date, String time, String reason,
+			Specialty specialty) {
+		this.id = id;
+		this.patientName = patient;
+		this.doctorName = doctor;
+		this.date = date;
+		this.time = time;
+		this.reason = reason;
+		this.specialty = specialty;
+	}
+
+	public void modifyAppointment(Appointment newAppointment) {
+		this.patientName = newAppointment.patientName;
+		this.doctorName = newAppointment.doctorName;
+		this.date = newAppointment.date;
+		this.time = newAppointment.time;
+		this.reason = newAppointment.reason;
+		this.specialty = newAppointment.specialty;
+	}
+
+	// Getters y Setters
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getPatient() {
+		return patientName;
+	}
+
+	public void setPatient(String patient) {
+		this.patientName = patient;
+	}
+
+	public String getDoctor() {
+		return doctorName;
+	}
+
+	public void setDoctor(String doctor) {
+		this.doctorName = doctor;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public Specialty getSpecialty() {
+		return specialty;
+	}
+
+	public void setSpecialty(Specialty specialty) {
+		this.specialty = specialty;
+	}
+
+	@Override
+	public String toString() {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		return String.format("ID: %s, Paciente: %s, Doctor: %s, Fecha: %s, Hora: %s, Motivo: %s, Especialidad: %s", id,
+				patientName, doctorName, date != null ? dateFormat.format(date) : "N/A", time, reason, specialty);
+	}
+
+}
+
+package model;
+
+import structure.AVLTree;
+import structure.BinaryTree;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+
+public class DataManager {
+
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
+	public void readPatients(BinaryTree<Patient> patientTree, String filePath) {
+		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				Patient patient = parsePatient(line);
+				if (patient != null) {
+					patientTree.add(patient);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private Patient parsePatient(String line) {
+		String[] parts = line.split(",");
+		if (parts.length != 5) {
+			return null; // Formato incorrecto
+		}
+
+		try {
+			String id = parts[0].trim();
+			String name = parts[1].trim();
+			Date birthDate = DATE_FORMAT.parse(parts[2].trim());
+			String address = parts[3].trim();
+			String contact = parts[4].trim();
+
+			return new Patient(id, name, birthDate, address, contact);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null; // Error al parsear la fecha
+		}
+	}
+
+	public void savePatients(BinaryTree<Patient> patientTree, String filePath) {
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+			// Usa el iterador in-order para recorrer el árbol
+			Iterator<Patient> iterator = patientTree.iterator();
+			while (iterator.hasNext()) {
+				Patient patient = iterator.next();
+				bw.write(formatPatient(patient));
+				bw.newLine();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private String formatPatient(Patient patient) {
+		return String.join(",", patient.getId(), patient.getName(), DATE_FORMAT.format(patient.getBirthDate()),
+				patient.getAddress(), patient.getContact());
+	}
+
+	public void readUsers(BinaryTree<User> userTree, String filePath) {
+		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				User user = parseUser(line);
+				if (user != null) {
+					userTree.add(user);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private User parseUser(String line) {
+		String[] parts = line.split(",");
+		if (parts.length != 3) {
+			return null; // Formato incorrecto
+		}
+
+		String nameid = parts[0].trim();
+		String password = parts[1].trim();
+		String rol = parts[2].trim();
+
+		return new User(nameid, password, rol);
+	}
+
+	public void saveUsers(BinaryTree<User> userTree, String filePath) {
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+			// Usa el iterador in-order para recorrer el árbol
+			Iterator<User> iterator = userTree.iterator();
+			while (iterator.hasNext()) {
+				User user = iterator.next();
+				bw.write(formatUser(user));
+				bw.newLine();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private String formatUser(User user) {
+		return String.join(",", user.getNameid(), user.getPassword(), user.getRol());
+	}
+
+	public void readDoctors(AVLTree<Doctor> doctorTree, String filePath) {
+		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				Doctor doctor = parseDoctor(line);
+				if (doctor != null) {
+					doctorTree.add(doctor);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private Doctor parseDoctor(String line) {
+		String[] parts = line.split(",");
+		if (parts.length != 3) {
+			return null; // Formato incorrecto
+		}
+
+		String professionalId = parts[0].trim();
+		String name = parts[1].trim();
+		Specialty specialty;
+
+		try {
+			specialty = Specialty.valueOf(parts[2].trim().toUpperCase());
+		} catch (IllegalArgumentException e) {
+			return null; // Especialidad inválida
+		}
+
+		return new Doctor(professionalId, name, specialty);
+	}
+
+	public void saveDoctors(AVLTree<Doctor> doctorTree, String filePath) {
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+			// Usa el iterador in-order para recorrer el árbol
+			Iterator<Doctor> iterator = doctorTree.iterator();
+			while (iterator.hasNext()) {
+				Doctor doctor = iterator.next();
+				bw.write(formatDoctor(doctor));
+				bw.newLine();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private String formatDoctor(Doctor doctor) {
+		return String.join(",", doctor.getProfessionalId(), doctor.getName(), doctor.getSpecialty().toString());
+	}
+
+	public void readAppointments(AVLTree<Appointment> appointmentTree, String filePath) {
+		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+			String line;
+			while ((line = br.readLine()) != null) {
+				Appointment appointment = parseAppointment(line);
+				if (appointment != null) {
+					appointmentTree.add(appointment);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private Appointment parseAppointment(String line) {
+		String[] parts = line.split(",");
+		if (parts.length != 7) {
+			return null; // Formato incorrecto
+		}
+
+		String id = parts[0].trim();
+		String patientName = parts[1].trim();
+		String doctorName = parts[2].trim();
+		Date date;
+		try {
+			date = DATE_FORMAT.parse(parts[3].trim());
+		} catch (ParseException e) {
+			return null; // Fecha inválida
+		}
+		String time = parts[4].trim();
+		String reason = parts[5].trim();
+		Specialty specialty;
+		try {
+			specialty = Specialty.valueOf(parts[6].trim().toUpperCase());
+		} catch (IllegalArgumentException e) {
+			return null; // Especialidad inválida
+		}
+
+		return new Appointment(id, patientName, doctorName, date, time, reason, specialty);
+	}
+
+	public void saveAppointments(AVLTree<Appointment> appointmentTree, String filePath) {
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+			// Usa el iterador in-order para recorrer el árbol
+			Iterator<Appointment> iterator = appointmentTree.iterator();
+			while (iterator.hasNext()) {
+				Appointment appointment = iterator.next();
+				bw.write(formatAppointment(appointment));
+				bw.newLine();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private String formatAppointment(Appointment appointment) {
+		return String.join(",", appointment.getId(), appointment.getPatient(), appointment.getDoctor(),
+				DATE_FORMAT.format(appointment.getDate()), appointment.getTime(), appointment.getReason(),
+				appointment.getSpecialty().toString());
+	}
+}
+
+package model;
+
+public class Doctor {
+	private String professionalId;
+	private String name;
+	private Specialty specialty;
+
+	public Doctor(String professionalId, String name, Specialty specialty) {
+		this.professionalId = professionalId;
+		this.name = name;
+		this.specialty = specialty;
+	}
+
+	public void updateInfo(Doctor newInfo) {
+		this.professionalId = newInfo.professionalId;
+		this.name = newInfo.name;
+		this.specialty = newInfo.specialty;
+	}
+
+	// Getters y Setters
+	public String getProfessionalId() {
+		return professionalId;
+	}
+
+	public void setProfessionalId(String professionalId) {
+		this.professionalId = professionalId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Specialty getSpecialty() {
+		return specialty;
+	}
+
+	public void setSpecialty(Specialty specialty) {
+		this.specialty = specialty;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("ID Profesional: %s, Nombre: %s, Especialidad: %s", professionalId, name, specialty);
+	}
+
+}
+package model;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class Patient {
+	private String id;
+	private String name;
+	private Date birthDate;
+	private String address;
+	private String contact;
+
+	public Patient(String id, String name, Date birthDate, String address, String contact) {
+		this.id = id;
+		this.name = name;
+		this.birthDate = birthDate;
+		this.address = address;
+		this.contact = contact;
+	}
+
+	public void updateInfo(Patient newInfo) {
+		this.name = newInfo.name;
+		this.birthDate = newInfo.birthDate;
+		this.address = newInfo.address;
+		this.contact = newInfo.contact;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Date getBirthDate() {
+		return birthDate;
+	}
+
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getContact() {
+		return contact;
+	}
+
+	public void setContact(String contact) {
+		this.contact = contact;
+	}
+	@Override
+	public String toString() {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	    return String.format(
+	        "ID: %s, Nombre: %s, Fecha de Nacimiento: %s, Dirección: %s, Contacto: %s",
+	        id,
+	        name,
+	        birthDate != null ? dateFormat.format(birthDate) : "N/A",
+	        address,
+	        contact
+	    );
+	}
+
+}
+package model;
+
+public enum Specialty {
+    CARDIOLOGY, 
+    PEDIATRICS, 
+    DERMATOLOGY, 
+    ORTHOPEDICS, 
+    ONCOLOGY, 
+    GYNECOLOGY
+}
+
+package model;
+
+public class User {
+	private String nameid;
+	private String password;
+	private String rol;
+
+	public User(String nameid, String password, String rol) {
+		this.nameid = nameid;
+		this.password = password;
+		this.rol = rol;
+	}
+
+	public void updateInfo(User newInfo) {
+		this.nameid = newInfo.nameid;
+		this.password = newInfo.password;
+		this.rol = newInfo.rol;
+	}
+
+	// Getters y Setters
+	public String getNameid() {
+		return nameid;
+	}
+
+	public void setNameid(String nameid) {
+		this.nameid = nameid;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getRol() {
+		return rol;
+	}
+
+	public void setRol(String rol) {
+		this.rol = rol;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("NameID: %s, Rol: %s", nameid, rol);
+	}
+
+}
