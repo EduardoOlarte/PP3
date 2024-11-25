@@ -7,37 +7,39 @@ import javax.swing.table.DefaultTableModel;
 
 public class AppointmentPanel extends JPanel {
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private JTextField idAppointmentField, doctorAppointmentField, patientAppointmentField, timeField, dateAppointmentField, specialtyField, reasonField, specialtyFilterField;
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    private JTextField idAppointmentField, doctorAppointmentField, patientAppointmentField, timeField,
+            dateAppointmentField, specialtyField, reasonField, specialtyFilterField, patientNameFilterField;
     private JTable appointmentTable;
-    private JButton addAppointmentButton, modifyAppointmentButton, cancelAppointmentButton, showAppointmentsButton, exitButton, menuButton, backLoginButton;
+    private JButton addAppointmentButton, modifyAppointmentButton, cancelAppointmentButton, showAppointmentsButton,
+            exitButton, menuButton, backLoginButton;
 
     public AppointmentPanel(View view) {
         setLayout(null);
         setBorder(new EmptyBorder(5, 5, 5, 5));
-        setBackground(new Color(102, 204, 255));
+        setBackground(new Color(135, 206, 235));
         setBounds(0, 0, 1184, 661);
 
         // Botones
         addAppointmentButton = new JButton("Agregar Cita");
-        addAppointmentButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        addAppointmentButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         addAppointmentButton.setBounds(17, 69, 185, 50);
         add(addAppointmentButton);
 
         modifyAppointmentButton = new JButton("Modificar Cita");
-        modifyAppointmentButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        modifyAppointmentButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         modifyAppointmentButton.setBounds(17, 151, 185, 50);
         add(modifyAppointmentButton);
 
         cancelAppointmentButton = new JButton("Eliminar Cita");
-        cancelAppointmentButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        cancelAppointmentButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         cancelAppointmentButton.setBounds(17, 232, 185, 57);
         add(cancelAppointmentButton);
 
         showAppointmentsButton = new JButton("Ver Citas");
-        showAppointmentsButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        showAppointmentsButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         showAppointmentsButton.setBounds(17, 314, 185, 50);
         add(showAppointmentsButton);
 
@@ -48,14 +50,14 @@ public class AppointmentPanel extends JPanel {
 
         menuButton = new JButton("Menu");
         menuButton.setBounds(17, 548, 87, 29);
+        menuButton.addActionListener(e -> view.showPanel("menuPanel")); // Acción para mostrar el LoginPanel
         add(menuButton);
-        
 
         backLoginButton = new JButton("Cerrar Sesion");
-        backLoginButton.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        backLoginButton.setFont(new Font("SansSerif", Font.BOLD, 12));
         backLoginButton.setBounds(41, 480, 138, 44);
+        backLoginButton.addActionListener(e -> view.showPanel("loginPanel")); // Acción para mostrar el LoginPanel
         add(backLoginButton);
-
 
         // Etiquetas y campos de texto
         JLabel idAppointmentLabel = new JLabel("Id Cita");
@@ -91,7 +93,7 @@ public class AppointmentPanel extends JPanel {
 
         dateAppointmentField = new JTextField();
         dateAppointmentField.setColumns(10);
-        dateAppointmentField.setBounds(219, 287, 152, 28);
+        dateAppointmentField.setBounds(219, 292, 152, 28);
         add(dateAppointmentField);
 
         JLabel timeLabel = new JLabel("Hora Cita");
@@ -122,6 +124,7 @@ public class AppointmentPanel extends JPanel {
         add(specialtyField);
 
         JLabel specialtyFilterLabel = new JLabel("Filtro de Especialidad");
+        specialtyFilterLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
         specialtyFilterLabel.setBounds(27, 376, 152, 22);
         add(specialtyFilterLabel);
 
@@ -129,6 +132,16 @@ public class AppointmentPanel extends JPanel {
         specialtyFilterField.setColumns(10);
         specialtyFilterField.setBounds(27, 398, 152, 28);
         add(specialtyFilterField);
+
+        JLabel patientNameFilterLabel = new JLabel("Nombre de Paciente");
+        patientNameFilterLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
+        patientNameFilterLabel.setBounds(27, 420, 200, 22);
+        add(patientNameFilterLabel);
+
+        patientNameFilterField = new JTextField();
+        patientNameFilterField.setColumns(10);
+        patientNameFilterField.setBounds(27, 440, 152, 28);
+        add(patientNameFilterField);
 
         // Tabla
         JScrollPane scrollPaneAppointment = new JScrollPane();
@@ -138,16 +151,15 @@ public class AppointmentPanel extends JPanel {
 
         appointmentTable = new JTable();
         appointmentTable.setModel(new DefaultTableModel(
-            new Object[][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-            },
-            new String[] {
-                "Id Cita", "Paciente", "Doctor", "Fecha de Cita", "Hora de Cita", "Motivo", "Especialidad"
-            }
-        ));
+                new Object[][] {
+                        { null, null, null, null, null, null, null },
+                        { null, null, null, null, null, null, null },
+                        { null, null, null, null, null, null, null },
+                        { null, null, null, null, null, null, null },
+                },
+                new String[] {
+                        "Id Cita", "Paciente", "Doctor", "Fecha de Cita", "Hora de Cita", "Motivo", "Especialidad"
+                }));
         scrollPaneAppointment.setViewportView(appointmentTable);
     }
 
@@ -214,5 +226,8 @@ public class AppointmentPanel extends JPanel {
 
     public JTable getAppointmentTable() {
         return appointmentTable;
+    }
+    public JTextField getPatientNameFilterField() {
+        return patientNameFilterField;
     }
 }

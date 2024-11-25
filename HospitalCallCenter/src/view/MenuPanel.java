@@ -13,37 +13,38 @@ public class MenuPanel extends JPanel {
 
     public MenuPanel(View view) {
         setLayout(null);
-        setBackground(new Color(102, 204, 255));
+        setBackground(new Color(135, 206, 235));
         setBounds(0, 0, 217, 700);
 
         // Botón "Citas"
         appointmentButton = new JButton("Citas");
-        appointmentButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        appointmentButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         appointmentButton.setBounds(17, 48, 185, 29);
         add(appointmentButton);
 
         // Botón "Pacientes"
         patientButton = new JButton("Pacientes");
-        patientButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        patientButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         patientButton.setBounds(17, 115, 185, 29);
         add(patientButton);
 
         // Botón "Doctores"
         doctorButton = new JButton("Doctores");
-        doctorButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        doctorButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         doctorButton.setBounds(17, 176, 185, 29);
         add(doctorButton);
 
         // Botón "Usuarios"
         usersButton = new JButton("Usuarios");
-        usersButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        usersButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         usersButton.setBounds(17, 237, 185, 29);
         add(usersButton);
 
         // Botón "Cerrar Sesión"
         logoutButton = new JButton("Cerrar Sesión");
-        logoutButton.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        logoutButton.setFont(new Font("SansSerif", Font.BOLD, 12));
         logoutButton.setBounds(39, 321, 138, 29);
+        logoutButton.addActionListener(e -> view.showPanel("loginPanel")); // Acción para mostrar el LoginPanel
         add(logoutButton);
 
         // Botón "Salir"

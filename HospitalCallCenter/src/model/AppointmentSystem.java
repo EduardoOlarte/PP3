@@ -34,7 +34,7 @@ public class AppointmentSystem {
 		fileUsers = "Data/Usuarios.txt";
 		fileDoctors = "Data/Doctores.txt";
 		fileAppointments = "Data/Citas.txt";
-
+		loadData();
 	}
 
 	public void loadData() {
@@ -51,47 +51,86 @@ public class AppointmentSystem {
 		dataManager.saveAppointments(appointmentTree, fileAppointments);
 	}
 
-	// Registrar una nueva cita
-	public boolean registerAppointment(String id, String patient, String doctor, Date date, String time, String reason, Specialty specialty) {
-	    if (date == null || time == null || time.isEmpty()) {
-	        throw new IllegalArgumentException("La cita debe tener fecha y hora válidas.");
-	    }
-
-	    // Proceder con la lógica para registrar la cita
-	    Appointment newAppointment = new Appointment(id, patient, doctor, date, time, reason, specialty);
-	    
-	    // Verifica si la cita ya existe
-	    if (appointmentTree.contains(newAppointment)) {
-	        return false; // La cita ya existe
-	    }
-
-	    // Si no existe, agregar la cita al árbol
-	    appointmentTree.add(newAppointment);
-	    return true; // Registro exitoso
-	}
-
-
-	// Modificar una cita existente
-	public boolean modifyAppointment(String id, String newPatientName, String newDoctorName, Date newDate,
-			String newTime, String newReason, Specialty newSpecialty) {
-		Appointment target = new Appointment(id, null, null, null, null, null, null);
-		NodeTreeAvl<Appointment> node = appointmentTree.search(target);
-
-		if (node == null) {
-			return false; // No existe la cita
+	public boolean registerAppointment(String id, String patient, String doctor, Date date, String time, String reason,
+			Specialty specialty) {
+		if (date == null || time == null || time.isEmpty()) {
+			throw new IllegalArgumentException("La cita debe tener fecha y hora válidas.");
 		}
 
-		Appointment existingAppointment = node.getData();
-		Appointment updatedAppointment = new Appointment(id, newPatientName, newDoctorName, newDate, newTime, newReason,
-				newSpecialty);
-		existingAppointment.modifyAppointment(updatedAppointment);
-		return true;
+		// Proceder con la lógica para registrar la cita
+		Appointment newAppointment = new Appointment(id, patient, doctor, date, time, reason, specialty);
+
+		// Verifica si una cita con el mismo ID ya existe
+		Iterator<Appointment> iterator = appointmentTree.iterator();
+		while (iterator.hasNext()) {
+			Appointment appointment = iterator.next();
+			if (appointment.getId().equals(id)) {
+				return false; // La cita con el mismo ID ya existe
+			}
+		}
+
+		// Verifica si una cita para el mismo paciente con la misma fecha y hora ya
+		// existe
+		iterator = appointmentTree.iterator();
+		while (iterator.hasNext()) {
+			Appointment appointment = iterator.next();
+			if (appointment.getPatient().equals(patient) &&
+					appointment.getDate().equals(date) &&
+					appointment.getTime().equals(time)) {
+				return false; // El paciente ya tiene una cita en la misma fecha y hora
+			}
+		}
+
+		// Verifica si el paciente ya tiene una cita con la misma especialidad
+		iterator = appointmentTree.iterator();
+		while (iterator.hasNext()) {
+			Appointment appointment = iterator.next();
+			if (appointment.getPatient().equals(patient) &&
+					appointment.getSpecialty().equals(specialty)) {
+				return false; // El paciente ya tiene una cita con la misma especialidad
+			}
+		}
+
+		// Si no existe, agregar la cita al árbol
+		appointmentTree.add(newAppointment);
+		return true; // Registro exitoso
+	}
+
+	public boolean modifyAppointment(String id, String patient, String doctor, Date date, String time, String reason,
+			Specialty specialty) {
+		Iterator<Appointment> iterator = appointmentTree.iterator();
+		while (iterator.hasNext()) {
+			Appointment appointment = iterator.next();
+			if (appointment.getId().equals(id) && appointment.getPatient().equals(patient)) {
+				appointment.setDoctor(doctor);
+				appointment.setDate(date);
+				appointment.setTime(time);
+				appointment.setReason(reason);
+				appointment.setSpecialty(specialty);
+				return true; // Modificación exitosa
+			}
+		}
+		return false; // La cita no existe
 	}
 
 	// Cancelar una cita existente
-	public boolean cancelAppointment(String id) {
-		Appointment target = new Appointment(id, null, null, null, null, null, null);
-		return appointmentTree.remove(target);
+	public boolean cancelAppointment(String id, String patient, String doctor, Date date, String time, String reason,
+			Specialty specialty) {
+		Iterator<Appointment> iterator = appointmentTree.iterator();
+		while (iterator.hasNext()) {
+			Appointment appointment = iterator.next();
+			if (appointment.getId().equals(id) &&
+					appointment.getPatient().equals(patient) &&
+					appointment.getDoctor().equals(doctor) &&
+					appointment.getDate().equals(date) &&
+					appointment.getTime().equals(time) &&
+					appointment.getReason().equals(reason) &&
+					appointment.getSpecialty().equals(specialty)) {
+				appointmentTree.remove(appointment);
+				return true; // Cancelación exitosa
+			}
+		}
+		return false; // La cita no existe
 	}
 
 	public List<Appointment> viewAllAppointments() {
@@ -161,7 +200,6 @@ public class AppointmentSystem {
 		return doctorTree.remove(target);
 	}
 
-	// Mostrar todos los doctores
 	public List<Doctor> viewAllDoctors() {
 		List<Doctor> doctorList = new ArrayList<>();
 		Iterator<Doctor> iterator = doctorTree.iterator();
@@ -169,6 +207,9 @@ public class AppointmentSystem {
 		while (iterator.hasNext()) {
 			doctorList.add(iterator.next());
 		}
+
+		// Ordenar la lista de doctores por nombre
+		doctorList.sort(Comparator.comparing(Doctor::getName));
 
 		return doctorList;
 	}
@@ -200,9 +241,11 @@ public class AppointmentSystem {
 		}
 
 		Patient existingPatient = node.getData();
-		Patient updatedPatient = new Patient(id, newName, newBirthDate, newAddress, newContact);
-		existingPatient.updateInfo(updatedPatient);
-		return true;
+		existingPatient.setName(newName);
+		existingPatient.setBirthDate(newBirthDate);
+		existingPatient.setAddress(newAddress);
+		existingPatient.setContact(newContact);
+		return true; // Modificación exitosa
 	}
 
 	// Eliminar un paciente
@@ -219,6 +262,9 @@ public class AppointmentSystem {
 		while (iterator.hasNext()) {
 			patientList.add(iterator.next());
 		}
+
+		// Ordenar la lista de pacientes por la primera letra de su nombre
+		patientList.sort(Comparator.comparing(Patient::getName));
 
 		return patientList;
 	}
@@ -250,9 +296,9 @@ public class AppointmentSystem {
 		}
 
 		User existingUser = node.getData();
-		User updatedUser = new User(nameid, newPassword, newRol);
-		existingUser.updateInfo(updatedUser);
-		return true;
+		existingUser.setPassword(newPassword);
+		existingUser.setRol(newRol);
+		return true; // Modificación exitosa
 	}
 
 	// Eliminar un usuario
@@ -270,6 +316,9 @@ public class AppointmentSystem {
 			userList.add(iterator.next());
 		}
 
+		// Ordenar la lista de usuarios por ID
+		userList.sort(Comparator.comparing(User::getNameid));
+
 		return userList;
 	}
 
@@ -279,6 +328,110 @@ public class AppointmentSystem {
 		NodeTree<User> node = userTree.search(target);
 
 		return (node != null) ? node.getData() : null;
+	}
+
+	// Método auxiliar para validar la cita
+	public String validateAppointment(String id, String patientName, String doctorName, Date date, String time,
+			Specialty specialty) {
+		if (!patientExist(patientName)) {
+			return "El paciente no existe.";
+		}
+
+		// Verificar que el doctor exista
+		if (!doctorExist(doctorName)) {
+			return "El doctor no existe.";
+		}
+
+		Iterator<Appointment> iterator = appointmentTree.iterator();
+		while (iterator.hasNext()) {
+			Appointment appointment = iterator.next();
+			if (appointment.getId().equals(id)) {
+				return "La cita con el mismo ID ya existe.";
+			}
+			if (appointment.getPatient().equals(patientName) &&
+					appointment.getDate().equals(date) &&
+					appointment.getTime().equals(time)) {
+				return "El paciente ya tiene una cita en la misma fecha y hora.";
+			}
+			if (appointment.getDate().equals(date) &&
+					appointment.getTime().equals(time) &&
+					appointment.getDoctor().equals(doctorName)) {
+				return "El Doctor ya tiene una cita en la misma fecha y hora.";
+			}
+			if (appointment.getPatient().equals(patientName) &&
+					appointment.getSpecialty().equals(specialty)) {
+				return "El paciente ya tiene una cita con la misma especialidad.";
+			}
+		}
+		return null; // No hay conflictos
+	}
+
+	// Método para verificar si un paciente existe
+	public boolean patientExist(String patientName) {
+		Iterator<Patient> patientIterator = patientTree.iterator();
+		while (patientIterator.hasNext()) {
+			Patient patient = patientIterator.next();
+			if (patient.getName().equals(patientName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean patientExists(String patientId) {
+		Iterator<Patient> iterator = patientTree.iterator();
+		while (iterator.hasNext()) {
+			Patient patient = iterator.next();
+			if (patient.getId().equals(patientId)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public Patient getPatientById(String patientId) {
+		Iterator<Patient> iterator = patientTree.iterator();
+		while (iterator.hasNext()) {
+			Patient patient = iterator.next();
+			if (patient.getId().equals(patientId)) {
+				return patient;
+			}
+		}
+		return null;
+	}
+
+	// Método para verificar si un doctor existe
+	public boolean doctorExist(String doctorName) {
+		Iterator<Doctor> doctorIterator = doctorTree.iterator();
+		while (doctorIterator.hasNext()) {
+			Doctor doctor = doctorIterator.next();
+			if (doctor.getName().equals(doctorName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean userExists(String nameid, String password) {
+		Iterator<User> iterator = userTree.iterator();
+		while (iterator.hasNext()) {
+			User user = iterator.next();
+			if (user.getNameid().equals(nameid) && user.getPassword().equals(password)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public User getUser(String nameid, String password) {
+		Iterator<User> iterator = userTree.iterator();
+		while (iterator.hasNext()) {
+			User user = iterator.next();
+			if (user.getNameid().equals(nameid) && user.getPassword().equals(password)) {
+				return user;
+			}
+		}
+		return null;
 	}
 
 }

@@ -7,6 +7,11 @@ public class View extends JFrame {
     private LoginPanel loginPanel;
     private AppointmentPanel appointmentPanel;
     private MenuPanel menuPanel;
+    private PatientPanel patientPanel;
+    private DoctorPanel doctorPanel;
+    private UserPanel userPanel;
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
 
     public View() {
         // Configuración de la ventana
@@ -15,28 +20,61 @@ public class View extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Centrar la ventana
 
+        // Inicializar el CardLayout y el panel principal
+        cardLayout = new CardLayout();
+        mainPanel = new JPanel(cardLayout);
+
         // Inicializar los paneles
         loginPanel = new LoginPanel(this);
         appointmentPanel = new AppointmentPanel(this);
         menuPanel = new MenuPanel(this);
+        patientPanel = new PatientPanel(this);
+        doctorPanel = new DoctorPanel(this);
+        userPanel = new UserPanel(this);
+
+        // Agregar los paneles al CardLayout
+        mainPanel.add(loginPanel, "loginPanel");
+        mainPanel.add(menuPanel, "menuPanel");
+        mainPanel.add(appointmentPanel, "appointmentPanel");
+        mainPanel.add(patientPanel, "patientPanel");
+        mainPanel.add(doctorPanel, "doctorPanel");
+        mainPanel.add(userPanel, "userPanel");
+
+        // Agregar el panel principal al JFrame
+        add(mainPanel);
+        setVisible(true);
 
         // Mostrar inicialmente el LoginPanel
-        add(loginPanel); // Esto agrega el LoginPanel a la ventana inicialmente
-        setVisible(true);
+        showPanel("loginPanel");
     }
 
-    // Método para cambiar el panel visible
-    public void changePanel(JPanel panel, int size) {
-        getContentPane().removeAll(); // Limpiar el contenido actual
-        add(panel); // Agregar el nuevo panel
-        if (size == 0) {
-            setBounds(100, 100, 1200, 700); // Dimensiones para el panel principal
-        } else {
-            setBounds(100, 100, 233, 438); // Dimensiones para el panel de inicio de sesión
+    // Método para mostrar un panel específico y redimensionar la ventana
+    public void showPanel(String panelName) {
+        cardLayout.show(mainPanel, panelName);
+        switch (panelName) {
+            case "loginPanel":
+                setSize(233, 438);
+                break;
+            case "menuPanel":
+                setSize(233, 438);
+                break;
+            case "appointmentPanel":
+                setSize(1200, 720);
+                break;
+            case "patientPanel":
+                setSize(1200, 720);
+                break;
+            case "doctorPanel":
+                setSize(1200, 720);
+                break;
+            case "userPanel":
+                setSize(1200, 720);
+                break;
+            default:
+                setSize(1200, 720);
+                break;
         }
-        setLocationRelativeTo(null);
-        revalidate();
-        repaint();
+        setLocationRelativeTo(null); // Centrar la ventana
     }
 
     // Getters para los paneles
@@ -50,5 +88,17 @@ public class View extends JFrame {
 
     public MenuPanel getMenuPanel() {
         return menuPanel;
+    }
+
+    public PatientPanel getPatientPanel() {
+        return patientPanel;
+    }
+
+    public DoctorPanel getDoctorPanel() {
+        return doctorPanel;
+    }
+
+    public UserPanel getUserPanel() {
+        return userPanel;
     }
 }

@@ -7,37 +7,38 @@ import javax.swing.table.DefaultTableModel;
 
 public class DoctorPanel extends JPanel {
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private JTextField idDoctorField, nameDoctorField, specialtyDoctorField;
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    private JTextField idDoctorField, nameDoctorField, specialtyDoctorField;
     private JTable doctorTable;
-    private JButton addDoctorButton, modifyDoctorButton, removeDoctorButton, showDoctorsButton, exitButton, menuButton, backLoginButton;
+    private JButton addDoctorButton, modifyDoctorButton, removeDoctorButton, showDoctorsButton, exitButton, menuButton,
+            backLoginButton;
 
     public DoctorPanel(View view) {
         setLayout(null);
         setBorder(new EmptyBorder(5, 5, 5, 5));
-        setBackground(new Color(102, 204, 255));
+        setBackground(new Color(135, 206, 235));
         setBounds(0, 0, 1184, 661);
 
         // Botones
         addDoctorButton = new JButton("Agregar Doctor");
-        addDoctorButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        addDoctorButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         addDoctorButton.setBounds(17, 69, 185, 50);
         add(addDoctorButton);
 
         modifyDoctorButton = new JButton("Modificar Doctor");
-        modifyDoctorButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        modifyDoctorButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         modifyDoctorButton.setBounds(17, 151, 185, 50);
         add(modifyDoctorButton);
 
         removeDoctorButton = new JButton("Eliminar Doctor");
-        removeDoctorButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        removeDoctorButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         removeDoctorButton.setBounds(17, 232, 185, 57);
         add(removeDoctorButton);
 
         showDoctorsButton = new JButton("Ver Doctores");
-        showDoctorsButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+        showDoctorsButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         showDoctorsButton.setBounds(17, 314, 185, 50);
         add(showDoctorsButton);
 
@@ -48,20 +49,14 @@ public class DoctorPanel extends JPanel {
 
         menuButton = new JButton("Menu");
         menuButton.setBounds(17, 548, 87, 29);
+        menuButton.addActionListener(e -> view.showPanel("menuPanel")); // Acción para mostrar el LoginPanel
         add(menuButton);
-        menuButton.addActionListener(e -> {
-            // Cambiar al LoginPanel
-            view.changePanel(new MenuPanel(view),1);
-        });
 
         backLoginButton = new JButton("Cerrar Sesion");
-        backLoginButton.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        backLoginButton.setFont(new Font("SansSerif", Font.BOLD, 12));
         backLoginButton.setBounds(41, 480, 138, 44);
+        backLoginButton.addActionListener(e -> view.showPanel("loginPanel")); // Acción para mostrar el LoginPanel
         add(backLoginButton);
-        backLoginButton.addActionListener(e -> {
-            // Cambiar al LoginPanel
-            view.changePanel(new LoginPanel(view),1);
-        });
 
         // Etiquetas y campos de texto
         JLabel idDoctorLabel = new JLabel("Id");
@@ -101,16 +96,15 @@ public class DoctorPanel extends JPanel {
         doctorTable.setShowVerticalLines(true);
         doctorTable.setShowHorizontalLines(true);
         doctorTable.setModel(new DefaultTableModel(
-            new Object[][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-            },
-            new String[] {
-                "Id", "Nombre", "Especialidad"
-            }
-        ));
+                new Object[][] {
+                        { null, null, null },
+                        { null, null, null },
+                        { null, null, null },
+                        { null, null, null },
+                },
+                new String[] {
+                        "Id", "Nombre", "Especialidad"
+                }));
         scrollPaneDoctors.setViewportView(doctorTable);
     }
 
